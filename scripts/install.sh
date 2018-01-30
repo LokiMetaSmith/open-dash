@@ -20,18 +20,33 @@ sudo nano /etc/udev/rules.d/99-input.rules
 sudo mkdir /usr/lib/udev
 sudo nano /usr/lib/udev/bluetooth
 
+cd ~
 git clone https://github.com/oblique/create_ap
 cd create_ap
+git reset --hard f906559f44afe6397a1775d0d2bc99d1e622b2fd
 make install
 
 sudo npm install -g pm2 nw  #--unsafe-perm=true --allow-root
 sudo python -m pip install pymongo numpy opencv-python
+ 
 
-create_ap wlx70f11c021d3b enp3s0 dash mypassword
+sudo create_ap --mkconfig /etc/create_ap.conf wlx70f11c021d3b enp3s0 dash mypassword
 systemctl enable create_ap
 
 ## install open-dash
 cd ~
-git clone https://github.com/physiii/open-dash
+git clone https://github.com/physiii/open-dash /
 cd open-dash
 npm install
+
+## set open-dash to auto start with pm2
+pm2 startup nwpm.js
+sudo pm2 startup systemd
+
+
+#install power off script
+sudo cp power /etc/acpi/events/
+sudo cp power.sh /etc/acpi/
+sudo chmod /etc/acpi/power.sh 755 
+
+
